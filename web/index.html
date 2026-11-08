@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#e40000">
+  <title>Ek Baithak — Accel Business</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <h1>Ek Baithak<small data-t="tagline">Accel Business · digital in one sitting</small></h1>
+      <button class="lang" id="langBtn">हिं</button>
+    </div>
+    <nav class="steps">
+      <button data-step="advisor" class="on" data-t="s1">1 · Advisor</button>
+      <button data-step="quote" disabled data-t="s2">2 · Quote</button>
+      <button data-step="kyc" disabled data-t="s3">3 · KYC</button>
+      <button data-step="track" disabled data-t="s4">4 · Track</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 1 ADVISOR -->
+    <section id="advisor">
+      <div class="chat" id="chat"></div>
+    </section>
+
+    <!-- 2 QUOTE -->
+    <section id="quote" class="hidden">
+      <div class="card">
+        <div class="muted" id="qProfile"></div>
+        <div class="price"><span class="big" id="qDay"></span><span class="per" data-t="perday">/ day</span></div>
+        <div class="muted" id="qMonth"></div>
+        <div class="seg" style="margin-top:10px">
+          <button data-months="12" class="on" data-t="m12">12 months</button>
+          <button data-months="24" data-t="m24">24 months · setup free</button>
+        </div>
+      </div>
+      <div class="card"><div id="qItems"></div></div>
+      <div id="qIdeas"></div>
+      <div class="card" id="qWithheld"></div>
+      <div class="card">
+        <div class="row"><span data-t="locked">I'm locked in a contract with another provider</span>
+          <label class="toggle"><input type="checkbox" id="lockedIn"><span></span></label></div>
+        <div id="spendRow" class="hidden" style="padding-top:8px">
+          <input type="number" id="spend" placeholder="Current monthly telecom bill (₹)">
+        </div>
+        <div class="row"><span data-t="cluster">Market lane code (Bazaar Cluster)</span></div>
+        <div style="display:flex;gap:8px"><input type="text" id="clusterCode" placeholder="e.g. JPR-JOHARI"><button class="btn ghost" id="joinCluster" data-t="join">Join</button></div>
+        <div class="row"><span data-t="saathi">Saathi code (if someone helped you)</span></div>
+        <input type="text" id="saathiCode" placeholder="e.g. SAATHI-RK07">
+      </div>
+      <button class="btn block" id="toKyc" data-t="buy">Looks good — verify my business</button>
+    </section>
+
+    <!-- 3 CONSENT + KYC -->
+    <section id="kyc" class="hidden">
+      <div class="card consent" id="consentCard">
+        <h3 style="margin:0 0 6px" data-t="consentH">Before you upload anything</h3>
+        <div class="muted" data-t="consentSub">We only ask for what the law needs. Choose what you allow — you can withdraw any time from the tracker.</div>
+        <div id="purposes"></div>
+        <div class="muted" id="retention" style="margin:8px 0"></div>
+        <button class="btn block" id="giveConsent" data-t="agree">I agree — continue</button>
+      </div>
+      <div class="card hidden" id="uploadCard">
+        <h3 style="margin:0 0 6px" data-t="snap">Snap 4 documents</h3>
+        <div class="docs">
+          <label class="doc" data-doc="gst_certificate">GST certificate<input type="file" accept="image/*" capture="environment"></label>
+          <label class="doc" data-doc="udyam_certificate">Udyam certificate<input type="file" accept="image/*" capture="environment"></label>
+          <label class="doc" data-doc="signatory_id">Signatory ID<input type="file" accept="image/*" capture="environment"></label>
+          <label class="doc" data-doc="address_proof">Address proof (≤ 90 days)<input type="file" accept="image/*" capture="environment"></label>
+        </div>
+        <button class="btn block" id="verifyBtn" style="margin-top:10px" data-t="verify">Verify instantly</button>
+        <div class="muted" style="margin:12px 0 6px" data-t="specimen">Demo: run a specimen applicant from the dataset</div>
+        <div style="display:flex;gap:8px"><select id="specimen"></select><button class="btn ghost" id="specimenBtn" data-t="run">Run</button></div>
+      </div>
+      <div id="kycResult"></div>
+    </section>
+
+    <!-- 4 TRACK -->
+    <section id="track" class="hidden">
+      <div class="card" id="trackCard"></div>
+      <div class="card">
+        <div class="muted" data-t="sim">Demo clock — see what happens if installation runs late</div>
+        <input type="range" min="0" max="20" value="2" id="dayRange" style="width:100%">
+        <div class="muted" id="dayLabel"></div>
+        <div class="row"><span data-t="delay">Simulate a 4-day install crew delay</span>
+          <label class="toggle"><input type="checkbox" id="delayToggle"><span></span></label></div>
+      </div>
+      <button class="btn ghost block" id="withdrawBtn" data-t="withdraw">Withdraw consent & delete my documents</button>
+    </section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

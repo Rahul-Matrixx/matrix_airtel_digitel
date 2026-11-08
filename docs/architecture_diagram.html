@@ -1,0 +1,70 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Ek Baithak architecture</title>
+<style>
+  body { margin: 0; font-family: Inter, "Segoe UI", Arial, sans-serif; background: #fff; }
+  .wrap { width: 1800px; height: 850px; position: relative; padding: 26px 30px; box-sizing: border-box; }
+  .cols { display: grid; grid-template-columns: 340px 400px 420px 440px; gap: 50px; }
+  .h { font-size: 15px; font-weight: 800; letter-spacing: 1.2px; color: #6b6b76; margin-bottom: 14px; }
+  .box { border-radius: 14px; padding: 13px 16px; margin-bottom: 16px; font-size: 16px; line-height: 1.35; border: 2.5px solid; position: relative; }
+  .box b { font-size: 19px; display: block; margin-bottom: 3px; }
+  .ch { border-color: #e40000; background: #fdecec; }
+  .ex { border-color: #e40000; background: #fff; }
+  .ex.dark { background: #1b1b1f; color: #fff; border-color: #1b1b1f; }
+  .sv { border-color: #3a3a44; background: #f3f3f5; }
+  .sv.llm { border-style: dashed; background: #fff; color: #3a3a44; }
+  .da { border-color: #2563eb; background: #eef4ff; }
+  .pv { border-color: #1e8e5a; background: #e8f5ee; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: #e40000; color: #fff; margin-left: 6px; vertical-align: middle; }
+  .tag.g { background: #1e8e5a; }
+  .num { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: #e40000; color: #fff; font-size: 15px; font-weight: 800; align-items: center; justify-content: center; margin-right: 6px; }
+  .dark .num { background: #fff; color: #1b1b1f; }
+  .flow { position: absolute; left: 30px; right: 30px; bottom: 22px; border: 2px dashed #c9c9d1; border-radius: 14px; padding: 12px 16px; font-size: 15px; color: #3a3a44; line-height: 1.45; }
+  svg { position: absolute; inset: 0; pointer-events: none; }
+  small { color: #6b6b76; font-size: 14px; }
+</style></head>
+<body><div class="wrap" id="w">
+<svg id="arrows" width="1800" height="850"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e40000"/></marker></defs></svg>
+<div class="cols">
+  <div><div class="h">CHANNELS</div>
+    <div class="box ch" id="c1"><b>Business owner</b>Phone browser · Hindi / English · 🎤 voice</div>
+    <div class="box ch" id="c2"><b>WhatsApp · QR · Bazaar Cluster</b>lane code + <small>?saathi=</small> carry attribution</div>
+    <div class="box ch" id="c3"><b>Saathi</b>field rep or local partner · 8% of yr-1 MRR on digital closes</div>
+  </div>
+  <div><div class="h">EXPERIENCE · MOBILE PWA</div>
+    <div class="box ex" id="e1"><b><span class="num">1</span>Advisor</b>chips + free text (Hinglish parser) → profile</div>
+    <div class="box ex" id="e2"><b><span class="num">2</span>Quote &amp; checkout</b>Rozana ₹/day · Bill-Swap · Switch Shield · Grow Ladder</div>
+    <div class="box ex" id="e3"><b><span class="num">3</span>Consent + Smart KYC</b>DPDP consent → 4 photos / DigiLocker → verdict</div>
+    <div class="box ex" id="e4"><b><span class="num">4</span>Tracker</b>promise date · auto late-day credit · withdraw</div>
+    <div class="box ex dark" id="e5"><b><span class="num">5</span>Saathi back office</b>win-back queue · SHAP reasons · commissions</div>
+  </div>
+  <div><div class="h">FASTAPI SERVICES</div>
+    <div class="box sv" id="s1"><b>Rules engine <span class="tag">deterministic</span></b>tier · size · GSTIN · requires_one_of → bundle</div>
+    <div class="box sv llm" id="s0"><b>LLM (optional)</b>rephrases the explanation only — never picks SKUs</div>
+    <div class="box sv" id="s2"><b>Pricing</b>floor-in-bundle · One-Bill · cluster · GST · setup waiver</div>
+    <div class="box sv" id="s3"><b>KYC service</b>de-watermark · deskew · sharpen → OCR → mod-36 check + look-alike repair → registry → cross-checks</div>
+    <div class="box sv" id="s4"><b>Orders</b>parallel survey · milestones · SLA credit</div>
+    <div class="box sv" id="s5"><b>Propensity</b>LightGBM · lead-time features · AUC 0.68 · 1.85× lift</div>
+  </div>
+  <div><div class="h">DATA &amp; INTEGRATIONS</div>
+    <div class="box da" id="d1"><b>product_catalogue</b>25 SKUs · rules · install days</div>
+    <div class="box da" id="d2"><b>GSTIN + Udyam registries</b>3,534 + 2,723 records <small>· prod: GSTN / Udyam / DigiLocker / e-Sign</small></div>
+    <div class="box da" id="d3"><b>smb_leads</b>5,000 leads · training + funnel</div>
+    <div class="box pv" id="d4"><b>🔒 Privacy layer <span class="tag g">DPDP 2023</span></b>purpose-tagged consent ledger · images in memory only · masked IDs in UI, API, logs · append-only audit log · one-tap withdrawal</div>
+  </div>
+</div>
+<div class="flow"><b>Data flow:</b> owner / link → advisor profile → rules engine + catalogue → quote → consent ledger → KYC (OCR → GSTIN check digit &amp; repair → registry → name / date / PIN / signatory checks → verdict) → order (survey booked at checkout) → tracker.
+Dropped leads → propensity model → Saathi queue → advisor link back to the owner with the Saathi's code. <b>Stack:</b> Python · FastAPI · Tesseract + OpenCV · LightGBM + SHAP · pandas · vanilla-JS PWA.</div>
+</div>
+<script>
+const svg = document.getElementById('arrows'), W = document.getElementById('w').getBoundingClientRect();
+function pt(id, side) { const r = document.getElementById(id).getBoundingClientRect();
+  return side === 'r' ? [r.right - W.left, r.top - W.top + r.height / 2] : [r.left - W.left, r.top - W.top + r.height / 2]; }
+function arrow(a, b, dashed) { const [x1, y1] = pt(a, 'r'), [x2, y2] = pt(b, 'l');
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); const mx = (x1 + x2) / 2;
+  p.setAttribute('d', `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2 - 4},${y2}`);
+  p.setAttribute('stroke', '#e40000'); p.setAttribute('stroke-width', '2.5'); p.setAttribute('fill', 'none');
+  if (dashed) p.setAttribute('stroke-dasharray', '7 6'); p.setAttribute('marker-end', 'url(#a)'); svg.appendChild(p); }
+[['c1','e1'],['c2','e1'],['c3','e5'],['e1','s1'],['e2','s2'],['e3','s3'],['e4','s4'],['e5','s5'],['s1','d1'],['s3','d2'],['s3','d4'],['s4','d4'],['s5','d3']].forEach(([a,b]) => arrow(a,b));
+arrow('e1','s0',true);
+</script>
+</body></html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ek Baithak — Saathi Back Office</title>
+  <link rel="stylesheet" href="/app/styles.css">
+  <style>
+    body { background: var(--bg); }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 16px; }
+    .bar { background: var(--ink); color: #fff; padding: 14px 18px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; }
+    .bar h1 { margin: 0; font-size: 18px; } .bar h1 span { color: #ff5c5c; } .bar a { color: #fff; font-size: 13px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+    .kpi { background: #fff; border-radius: 12px; padding: 12px 14px; }
+    .kpi b { display: block; font-size: 24px; color: var(--red); } .kpi span { font-size: 12px; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: 1fr 2.2fr; gap: 12px; }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); padding: 8px 6px; border-bottom: 1px solid var(--line); }
+    td { padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .score { font-weight: 800; color: var(--red); }
+    .bar-row { display: grid; grid-template-columns: 110px 1fr 50px; gap: 8px; align-items: center; font-size: 13px; margin: 6px 0; }
+    .bar-fill { height: 16px; background: #f0a3a3; border-radius: 4px; } .bar-fill.last { background: var(--red); }
+    .reason { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 999px; margin: 1px 2px 1px 0; }
+    .reason.up { background: var(--gtint); color: var(--green); } .reason.down { background: var(--tint); color: var(--red); }
+    .send { font-size: 12px; padding: 6px 10px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><h1>Ek <span>Baithak</span> · Saathi back office</h1><a href="/app/">Customer app →</a></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid">
+    <div>
+      <div class="card"><h3 style="margin:0 0 8px">Funnel, Apr–Jun 2026</h3><div id="funnel"></div></div>
+      <div class="card"><h3 style="margin:0 0 8px">Saathi commissions</h3><div id="comm" class="muted">No digital closes yet — orders placed with a Saathi code appear here (8% of year-1 MRR).</div></div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 4px">Win-back call queue</h3>
+      <div class="muted" id="modelNote" style="margin-bottom:8px"></div>
+      <table><thead><tr><th>#</th><th>Lead</th><th>Dropped at</th><th>Score</th><th>Why (top SHAP drivers)</th><th></th></tr></thead><tbody id="queue"></tbody></table>
+    </div>
+  </div>
+</div>
+<script>
+const inr = n => "₹" + Number(n).toLocaleString("en-IN");
+(async () => {
+  const [f, w] = await Promise.all([fetch("/api/backoffice/funnel").then(r => r.json()), fetch("/api/backoffice/winback?limit=40").then(r => r.json())]);
+  const last = f.funnel[f.funnel.length - 1].count, first = f.funnel[0].count;
+  document.getElementById("kpis").innerHTML = [
+    [first.toLocaleString("en-IN"), "leads this quarter"], [(100 * last / first).toFixed(1) + "%", "lead → activation"],
+    [f.days_to_activate + " d", "avg time to activate"], [inr(f.cac), "CAC per activated SMB"],
+    [w.model.auc, "propensity AUC (Jun hold-out)"], [w.model.lift + "×", `top-20% lift · ${Math.round(w.model.top20_capture * 100)}% of activations`],
+  ].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join("");
+  document.getElementById("funnel").innerHTML = f.funnel.map((s, i) => `<div class="bar-row"><span>${s.stage}</span>
+    <div class="bar-fill ${i === f.funnel.length - 1 ? "last" : ""}" style="width:${100 * s.count / first}%"></div><b>${s.count.toLocaleString("en-IN")}</b></div>`).join("");
+  document.getElementById("modelNote").textContent = `LightGBM on lead-time features only (${w.model.split}; ${w.model.train} train / ${w.model.test} test). Call from the top: the first 20% holds ${Math.round(w.model.top20_capture * 100)}% of activations.`;
+  document.getElementById("queue").innerHTML = w.queue.map(q => `<tr>
+    <td>${q.rank}</td><td><b>${q.business}</b><br><span class="muted">${q.lead_id} · ${q.segment} · ${q.city} · ${q.language} · GSTIN ${q.gstin}</span></td>
+    <td>${q.dropped_at}<br><span class="muted">${q.drop_reason}</span></td><td class="score">${q.score}</td>
+    <td>${q.reasons.map(r => `<span class="reason ${r.direction}">${r.direction === "up" ? "▲" : "▼"} ${r.feature}: ${r.value}</span>`).join("")}</td>
+    <td><button class="btn ghost send" onclick="navigator.clipboard?.writeText(location.origin + '/app/?saathi=SAATHI-RK07&lead=${q.lead_id}');this.textContent='Link copied'">Send advisor link</button></td></tr>`).join("");
+  if (f.commissions.length) document.getElementById("comm").innerHTML = f.commissions.map(c => `<div class="row"><span>${c.saathi_code} · ${c.order_id}</span><b>${inr(c.commission_inr)}</b></div>`).join("");
+})();
+</script>
+</body>
+</html>

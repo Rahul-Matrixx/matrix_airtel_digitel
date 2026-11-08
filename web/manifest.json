@@ -1,0 +1,9 @@
+{
+  "name": "Ek Baithak — Accel Business",
+  "short_name": "Ek Baithak",
+  "start_url": "/app/",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#e40000",
+  "description": "Discover, buy, verify and track your business bundle in one sitting."
+}
